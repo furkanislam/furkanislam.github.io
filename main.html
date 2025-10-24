@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harita Mühendisi & iOS Developer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #e8eaed;
+            background: #0a0e27;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 170, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 170, 0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        nav {
+            background: rgba(15, 20, 40, 0.85);
+            backdrop-filter: blur(15px);
+            padding: 25px 45px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(0, 255, 170, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 40px rgba(0, 255, 170, 0.15);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.6em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffaa, #4a90e2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+        }
+
+        .nav-links a {
+            color: #e8eaed;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .nav-links a:hover {
+            color: #00ffaa;
+            transform: translateY(-2px);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ffaa, #4a90e2);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            padding: 100px 40px;
+            background: linear-gradient(135deg, rgba(15, 20, 40, 0.95), rgba(26, 32, 60, 0.95));
+            border-radius: 25px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(0, 255, 170, 0.3);
+            box-shadow: 0 25px 70px rgba(0, 255, 170, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 170, 0.15) 0%, transparent 70%);
+            animation: headerPulse 5s ease-in-out infinite;
+        }
+
+        @keyframes headerPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.4; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.7; }
+        }
+
+        .profile-section {
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 35px;
+            background: linear-gradient(135deg, #00ffaa, #4a90e2, #8b5cf6);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 90px;
+            box-shadow: 0 15px 50px rgba(0, 255, 170, 0.5);
+            transform: rotate(-5deg);
+            transition: all 0.4s ease;
+            animation: floatProfile 6s ease-in-out infinite;
+        }
+
+        @keyframes floatProfile {
+            0%, 100% { transform: rotate(-5deg) translateY(0px); }
+            50% { transform: rotate(5deg) translateY(-15px); }
+        }
+
+        .profile-img:hover {
+            transform: rotate(0deg) scale(1.08);
+            box-shadow: 0 20px 60px rgba(0, 255, 170, 0.6);
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #00ffaa, #4a90e2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            letter-spacing: -2px;
+            animation: titleShine 3s ease-in-out infinite;
+            background-size: 200% auto;
+        }
+
+        @keyframes titleShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .title {
+            font-size: 1.5em;
+            color: #00ffaa;
+            margin-bottom: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.15em;
+            color: rgba(232, 234, 237, 0.7);
+            margin-bottom: 35px;
+            line-height: 1.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 18px 45px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ffaa, #00d4aa);
+            color: #0a0e27;
+            box-shadow: 0 8px 25px rgba(0, 255, 170, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(0, 255, 170, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #00ffaa;
+            border: 2px solid #00ffaa;
+            box-shadow: 0 0 20px rgba(0, 255, 170, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 255, 170, 0.15);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(0, 255, 170, 0.4);
+        }
+
+        section {
+            background: linear-gradient(135deg, rgba(15, 20, 40, 0.95), rgba(26, 32, 60, 0.95));
+            padding: 60px 45px;
+            margin-bottom: 40px;
+            border-radius: 25px;
+            border: 1px solid rgba(0, 255, 170, 0.25);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(0, 255, 170, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        h2 {
+            font-size: 2.8em;
+            margin-bottom: 35px;
+            background: linear-gradient(135deg, #ffffff, #00ffaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            padding-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 5px;
+            background: linear-gradient(90deg, #00ffaa, #4a90e2);
+            border-radius: 3px;
+            animation: lineExpand 2s ease-in-out infinite;
+        }
+
+        @keyframes lineExpand {
+            0%, 100% { width: 100px; }
+            50% { width: 150px; }
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-text {
+            font-size: 1.2em;
+            color: rgba(232, 234, 237, 0.85);
+            line-height: 2;
+        }
+
+        .about-text p {
+            margin-bottom: 25px;
+        }
+
+        .about-stats {
+            display: grid;
+            gap: 25px;
+        }
+
+        .stat-card {
+            background: rgba(0, 255, 170, 0.08);
+            padding: 35px;
+            border-radius: 20px;
+            border-left: 5px solid #00ffaa;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(0, 255, 170, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+            transition: all 0.4s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(0, 255, 170, 0.15);
+            transform: translateX(15px) scale(1.02);
+            box-shadow: 0 10px 40px rgba(0, 255, 170, 0.3);
+        }
+
+        .stat-card:hover::before {
+            width: 120px;
+            height: 120px;
+        }
+
+        .stat-number {
+            font-size: 3.5em;
+            color: #00ffaa;
+            font-weight: 900;
+            margin-bottom: 8px;
+            line-height: 1;
+            text-shadow: 0 0 30px rgba(0, 255, 170, 0.5);
+        }
+
+        .stat-label {
+            color: rgba(232, 234, 237, 0.7);
+            font-size: 1.05em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 35px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .skill-category {
+            background: rgba(0, 255, 170, 0.06);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 170, 0.25);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #00ffaa, #4a90e2, #8b5cf6);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .skill-category:hover::before {
+            transform: scaleX(1);
+        }
+
+        .skill-category:hover {
+            border-color: #00ffaa;
+            box-shadow: 0 15px 50px rgba(0, 255, 170, 0.3);
+            transform: translateY(-10px) scale(1.02);
+            background: rgba(0, 255, 170, 0.12);
+        }
+
+        .skill-icon {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .skill-category h3 {
+            color: #00ffaa;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .skill-category p {
+            color: rgba(232, 234, 237, 0.7);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            background: rgba(0, 255, 170, 0.15);
+            color: #00ffaa;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            border: 1px solid rgba(0, 255, 170, 0.3);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: rgba(0, 255, 170, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 170, 0.3);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 35px;
+            margin-top: 35px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-card {
+            background: rgba(0, 255, 170, 0.06);
+            padding: 45px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 170, 0.25);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #00ffaa, #4a90e2, #8b5cf6);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .project-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .project-card:hover {
+            border-color: #00ffaa;
+            box-shadow: 0 20px 60px rgba(0, 255, 170, 0.3);
+            transform: translateY(-12px) scale(1.02);
+            background: rgba(0, 255, 170, 0.12);
+        }
+
+        .project-icon {
+            font-size: 3em;
+            margin-bottom: 25px;
+            display: inline-block;
+            animation: projectIconSpin 4s ease-in-out infinite;
+        }
+
+        @keyframes projectIconSpin {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(10deg) scale(1.1); }
+        }
+
+        .project-card h3 {
+            color: #00ffaa;
+            margin-bottom: 18px;
+            font-size: 1.6em;
+            font-weight: 700;
+        }
+
+        .project-card p {
+            color: rgba(232, 234, 237, 0.8);
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .app-store-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #00ffaa;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95em;
+            padding: 10px 20px;
+            border: 1px solid rgba(0, 255, 170, 0.3);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .app-store-link:hover {
+            background: rgba(0, 255, 170, 0.15);
+            border-color: #00ffaa;
+            transform: translateX(5px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px;
+            background: rgba(15, 20, 40, 0.95);
+            border-radius: 25px;
+            color: rgba(232, 234, 237, 0.6);
+            border: 1px solid rgba(0, 255, 170, 0.25);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .social-links a {
+            width: 65px;
+            height: 65px;
+            background: rgba(0, 255, 170, 0.1);
+            border: 2px solid rgba(0, 255, 170, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00ffaa;
+            text-decoration: none;
+            font-size: 1.5em;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .social-links a:hover {
+            background: linear-gradient(135deg, #00ffaa, #4a90e2);
+            color: #0a0e27;
+            transform: translateY(-8px) rotate(10deg) scale(1.15);
+            box-shadow: 0 12px 35px rgba(0, 255, 170, 0.5);
+            border-color: transparent;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            h1 {
+                font-size: 2.2em;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-grid,
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            section {
+                padding: 35px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    
+    <div class="container">
+        <nav>
+            <div class="logo">🗺️ Portfolio</div>
+            <div class="nav-links">
+                <a href="#about">Hakkımda</a>
+                <a href="#skills">Yetenekler</a>
+                <a href="#projects">Projeler</a>
+                <a href="#contact">İletişim</a>
+            </div>
+        </nav>
+
+        <header>
+            <div class="profile-section">
+                <div class="profile-img">🌍</div>
+                <h1>Furkan İSLAM</h1>
+                <p class="title">Harita Mühendisi & iOS Developer</p>
+                <p class="subtitle">Geospatial Intelligence | Mobile Development | Cybersecurity<br>Fotogrametri • Web CBS • Cross-Platform Solutions</p>
+                <div class="cta-buttons">
+                    <a href="#contact" class="btn btn-primary">İletişime Geç</a>
+                    <a href="https://github.com/furkanislam" class="btn btn-secondary" target="_blank">GitHub</a>
+                </div>
+            </div>
+        </header>
+
+        <section id="about">
+            <h2>Hakkımda</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>
+                        Merhaba! Harita Mühendisi olarak mezun oldum ve şu anda iOS geliştirme alanında 
+                        kendimi geliştirmeye devam ediyorum. Jeodezik ölçümler, fotogrametrik analizler, 
+                        kartografik tasarımlar ve modern yazılım geliştirme pratiklerini birleştirerek 
+                        yenilikçi çözümler üretiyorum.
+                    </p>
+                    <p>
+                        Coğrafi bilgi sistemleri (CBS), mobil uygulama geliştirme ve siber güvenlik 
+                        alanlarında deneyim sahibiyim. Web tabanlı CBS uygulamaları, fotogrametrik İHA 
+                        görüntü işleme, şantiye takip sistemleri ve cross-platform mobil çözümler geliştiriyorum. 
+                        App Store'da yayınlanmış iOS uygulamalarım bulunmaktadır.
+                    </p>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Teknoloji Alanı</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">Proje Deneyimi</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Öğrenme Tutkusu</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills">
+            <h2>Teknik Yetenekler</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <div class="skill-icon">🗺️</div>
+                    <h3>Harita Mühendisliği</h3>
+                    <p>Geospatial veri analizi, jeodezi ve CBS çözümleri</p>
+                    <div class="skill-tags">
+                        <span class="tag">Fotogrametri</span>
+                        <span class="tag">Web CBS</span>
+                        <span class="tag">GIS</span>
+                        <span class="tag">Jeodezi</span>
+                        <span class="tag">Kartografya</span>
+                        <span class="tag">İHA Haritalama</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <div class="skill-icon">📱</div>
+                    <h3>Mobil Geliştirme</h3>
+                    <p>iOS ve cross-platform uygulama geliştirme</p>
+                    <div class="skill-tags">
+                        <span class="tag">iOS</span>
+                        <span class="tag">Flutter</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <div class="skill-icon">🌐</div>
+                    <h3>Web Teknolojileri</h3>
+                    <p>Modern web uygulamaları ve arayüzler</p>
+                    <div class="skill-tags">
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">JavaScript</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <div class="skill-icon">🔒</div>
+                    <h3>Siber Güvenlik</h3>
+                    <p>Güvenli yazılım geliştirme pratikleri</p>
+                    <div class="skill-tags">
+                        <span class="tag">Security</span>
+                        <span class="tag">Penetration</span>
+                        <span class="tag">Analysis</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects">
+            <h2>Öne Çıkan Projeler</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-icon">📱</div>
+                    <h3>masAlino - iOS Uygulaması</h3>
+                    <p>
+                        App Store'da yayınlanan interaktif masal okuma uygulaması. Çocuklar için 
+                        eğlenceli ve öğretici içerikler sunan, kullanıcı dostu arayüze sahip iOS uygulaması. 
+                        SwiftUI ile modern tasarım ve CoreData ile veri yönetimi.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tag">iOS</span>
+                        <span class="tag">Swift</span>
+                        <span class="tag">SwiftUI</span>
+                        <span class="tag">App Store</span>
+                    </div>
+                    <a href="https://apps.apple.com/tr/app/masalino/id6751493073?l=tr" target="_blank" class="app-store-link">
+                        App Store'da Görüntüle →
+                    </a>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-icon">✅</div>
+                    <h3>GörevX - iOS Uygulaması</h3>
+                    <p>
+                        App Store'da yayınlanan görev yönetimi ve produktivite uygulaması. Kullanıcıların 
+                        günlük işlerini organize etmelerine yardımcı olan, sezgisel arayüze sahip iOS uygulaması. 
+                        Modern iOS framework'leri ile geliştirilmiştir.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tag">iOS</span>
+                        <span class="tag">Swift</span>
+                        <span class="tag">UIKit</span>
+                        <span class="tag">App Store</span>
+                    </div>
+                    <a href="https://apps.apple.com/tr/app/g%C3%B6revx/id6743240654?l=tr" target="_blank" class="app-store-link">
+                        App Store'da Görüntüle →
+                    </a>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-icon">🚁</div>
+                    <h3>Fotogrametri & İHA Haritalama</h3>
+                    <p>
+                        Hava fotoğraflarından 3D model oluşturma, kübaj hesaplamaları, halihazır harita 
+                        üretimi ve şantiye takip sistemleri. İHA görüntü işleme ve ortofoto üretimi ile 
+                        yüksek doğrulukta metrik bilgi üretimi.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tag">Fotogrametri</span>
+                        <span class="tag">İHA Mapping</span>
+                        <span class="tag">3D Modelleme</span>
+                        <span class="tag">Kübaj Hesabı</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-icon">🗺️</div>
+                    <h3>Web CBS Uygulaması</h3>
+                    <p>
+                        İnteraktif harita görselleştirme ve coğrafi veri analizi için geliştirilmiş 
+                        web tabanlı CBS platformu. Gerçek zamanlı veri işleme ve görselleştirme özellikleri.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tag">Web CBS</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">HTML/CSS</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-icon">🛡️</div>
+                    <h3>Güvenli Veri Transfer Sistemi</h3>
+                    <p>
+                        Coğrafi verilerin güvenli bir şekilde iletilmesi için geliştirilmiş şifreleme 
+                        ve kimlik doğrulama sistemi. End-to-end encryption desteği.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tag">Siber Güvenlik</span>
+                        <span class="tag">Encryption</span>
+                        <span class="tag">Kotlin</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-icon">🌍</div>
+                    <h3>Cross-Platform Harita Uygulaması</h3>
+                    <p>
+                        Flutter ile geliştirilmiş, iOS ve Android'de çalışan harita tabanlı mobil uygulama. 
+                        Gerçek zamanlı konum paylaşımı ve route planlama.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tag">Flutter</span>
+                        <span class="tag">Dart</span>
+                        <span class="tag">Maps API</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer id="contact">
+            <h2 style="margin-bottom: 30px;">İletişim</h2>
+            <div class="social-links">
+                <a href="https://github.com/furkanislam" target="_blank" title="GitHub">🔗</a>
+                <a href="https://linkedin.com/in/furkanislam" target="_blank" title="LinkedIn">💼</a>
+                <a href="islamfurkan53@gmail.com" title="Email">📧</a>
+            </div>
+            <p>&copy; 2025 Furkan İSLAM. Tüm hakları saklıdır.</p>
+            <p style="margin-top: 15px; color: #00ffaa; font-weight: 600;">Harita Mühendisi | iOS Developer | Geospatial Enthusiast</p>
+        </footer>
+    </div>
+
+    <script>
+        // Smooth scroll için
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Scroll animasyonu için
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section, .project-card, .skill-category').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Parallax efekti için
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.bg-grid');
+            parallaxElements.forEach(el => {
+                el.style.transform = `translateY(${scrolled * 0.5}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
